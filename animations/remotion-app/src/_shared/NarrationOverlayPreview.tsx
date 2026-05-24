@@ -19,7 +19,7 @@ export const NarrationOverlayPreview: React.FC = () => {
         Hola
       </div>
       <NarrationOverlay
-        text='Acabás de escribir "Hola" y tocar enviar. Seis letras. Algunos segundos de tu vida. Pero ese mensaje, antes de llegar al otro teléfono, fue cifrado con matemáticas que ninguna computadora actual puede romper.'
+        text='Acabás de escribir "Hola" y tocar enviar. Cuatro letras. Solo unos segundos de tu vida. Pero ese mensaje, antes de llegar al otro teléfono, fue cifrado con matemáticas que ninguna computadora actual puede romper.'
         beatLabel="Beat 1 · Hook"
         timeRange="00:00–00:15"
       />

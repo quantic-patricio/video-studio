@@ -12,6 +12,7 @@ type CipherTextProps = {
   progress: number;
   style?: React.CSSProperties;
   scrambleSpeed?: number;
+  charSet?: string;
 };
 
 export const CipherText: React.FC<CipherTextProps> = ({
@@ -19,9 +20,11 @@ export const CipherText: React.FC<CipherTextProps> = ({
   progress,
   style,
   scrambleSpeed = 3,
+  charSet,
 }) => {
   const frame = useCurrentFrame();
   const clampedProgress = Math.max(0, Math.min(1, progress));
+  const pool = charSet || CHARS;
 
   const chars = text.split("").map((char, i) => {
     if (char === " ") return " ";
@@ -33,7 +36,7 @@ export const CipherText: React.FC<CipherTextProps> = ({
 
     const cycleFrame = Math.floor(frame / scrambleSpeed);
     const seed = cycleFrame * text.length + i;
-    const randomChar = CHARS[Math.floor(seededRandom(seed) * CHARS.length)];
+    const randomChar = pool[Math.floor(seededRandom(seed) * pool.length)];
     return randomChar;
   });
 
@@ -47,6 +50,7 @@ type CipherTextAnimatedProps = {
   style?: React.CSSProperties;
   scrambleSpeed?: number;
   mode?: "reveal" | "scramble";
+  charSet?: string;
 };
 
 export const CipherTextAnimated: React.FC<CipherTextAnimatedProps> = ({
@@ -56,6 +60,7 @@ export const CipherTextAnimated: React.FC<CipherTextAnimatedProps> = ({
   style,
   scrambleSpeed = 3,
   mode = "reveal",
+  charSet,
 }) => {
   const frame = useCurrentFrame();
   const rawProgress = interpolate(
@@ -73,6 +78,7 @@ export const CipherTextAnimated: React.FC<CipherTextAnimatedProps> = ({
       progress={progress}
       style={style}
       scrambleSpeed={scrambleSpeed}
+      charSet={charSet}
     />
   );
 };

@@ -38,8 +38,9 @@ componentes existentes y evitar duplicación.
   - `progress: number` — 0 = todo scrambled, 1 = todo revelado. Revela izquierda→derecha.
   - `style?: React.CSSProperties` — estilos inline para el `<span>`.
   - `scrambleSpeed?: number` (default: 3) — cada cuántos frames cambia el carácter aleatorio.
+  - `charSet?: string` — pool de caracteres para el scramble (default: alfanumérico + símbolos). Ej: `"0123456789ABCDEF"` para hex.
 - **Props (CipherTextAnimated)**:
-  - `text`, `style`, `scrambleSpeed` — igual que arriba.
+  - `text`, `style`, `scrambleSpeed`, `charSet` — igual que arriba.
   - `startFrame: number` — frame donde arranca la animación.
   - `durationFrames: number` — cuántos frames dura el reveal/scramble completo.
   - `mode?: "reveal" | "scramble"` (default: "reveal") — "reveal" va de scrambled→legible, "scramble" va de legible→ilegible.
@@ -62,6 +63,26 @@ componentes existentes y evitar duplicación.
   - Preview en Remotion Studio: leer el guión mientras se evalúa el timing.
   - Ajuste de duración: si el texto no cabe en el beat, el beat es muy corto.
 - **Preview**: registrado en Root.tsx como `<Composition id="Shared-NarrationOverlay">`.
+
+### PhoneMockup
+- **Path**: `_shared/PhoneMockup.tsx`
+- **Descripción**: Frame de smartphone moderno (bisel oscuro, notch, botones laterales) que acepta `children` como contenido de pantalla. Proporciones 320×640px, optimizado para canvas 1920×1080. Sombra cinematográfica. El contenido se renderiza dentro de un área recortada con overflow hidden y bordes redondeados.
+- **Exports**:
+  - `PhoneMockup` — componente principal.
+  - `PhoneMockupProps` — interfaz de props.
+  - `PHONE_DIMENSIONS` — constantes de dimensiones (width, height, screenWidth, screenHeight, bezel, outerRadius, innerRadius).
+- **Props (PhoneMockup)**:
+  - `children?: React.ReactNode` — contenido que se renderiza dentro de la pantalla.
+  - `scale?: number` (default: 1) — factor de escala del teléfono completo.
+  - `style?: React.CSSProperties` — estilos adicionales del contenedor exterior.
+  - `showNotch?: boolean` (default: true) — mostrar/ocultar el notch.
+  - `bezelColor?: string` (default: bgSubtle) — color del bisel/marco.
+  - `screenColor?: string` (default: bgBase) — color de fondo de la pantalla.
+- **Variantes de uso**:
+  - Hook: teléfono con chat WhatsApp simplificado, animación de typing y envío.
+  - Beat 1: teléfono con grilla de sensores (posible).
+  - Beat 6: teléfono recibiendo el mensaje con tildes.
+- **Preview**: registrado en Root.tsx como `<Composition id="Shared-PhoneMockup">`.
 
 ### LayerStack
 - **Path**: `_shared/LayerStack.tsx`
