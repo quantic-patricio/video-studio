@@ -1,7 +1,7 @@
 {
-  "name": "ai-course-animations",
+  "name": "video-studio-animations",
   "version": "0.1.0",
-  "description": "Remotion app for the AI course video studio",
+  "description": "Remotion app for video studio",
   "scripts": {
     "dev": "remotion studio",
     "build": "remotion bundle",

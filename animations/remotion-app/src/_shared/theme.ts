@@ -1,30 +1,30 @@
 export const colors = {
-  bgDeep: "#030712",
-  bgBase: "#0a0f1a",
-  bgElevated: "#111827",
-  bgSubtle: "#1f2937",
+  bgDeep: "#000000",
+  bgBase: "#0a0a0a",
+  bgElevated: "#1a1a1a",
+  bgSubtle: "#2a2a2a",
 
-  fgPrimary: "#F9FAFB",
-  fgSecondary: "#9CA3AF",
-  fgMuted: "#6B7280",
+  fgPrimary: "#ffffff",
+  fgSecondary: "#999999",
+  fgMuted: "#666666",
 
-  accentWarm: "#F59E0B",
-  accentWarmGlow: "rgba(245, 158, 11, 0.15)",
-  accentCool: "#6366F1",
-  accentCoolGlow: "rgba(99, 102, 241, 0.12)",
+  accentWarm: "#ff9900",
+  accentWarmGlow: "rgba(255, 153, 0, 0.15)",
+  accentCool: "#6666ff",
+  accentCoolGlow: "rgba(102, 102, 255, 0.12)",
 
-  success: "#10B981",
-  error: "#EF4444",
+  success: "#00cc77",
+  error: "#ff4444",
 
   border: "rgba(255, 255, 255, 0.08)",
-  borderAccent: "rgba(245, 158, 11, 0.25)",
+  borderAccent: "rgba(255, 153, 0, 0.25)",
   surfaceGlass: "rgba(255, 255, 255, 0.05)",
 } as const;
 
 export const fonts = {
-  display: "Space Grotesk, sans-serif",
-  body: "Inter, sans-serif",
-  code: "JetBrains Mono, monospace",
+  display: "sans-serif",
+  body: "sans-serif",
+  code: "monospace",
 } as const;
 
 export const fullScreen: React.CSSProperties = {

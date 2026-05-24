@@ -1,34 +1,42 @@
-# AI Course — Video Studio
+# Video Studio
 
 ## Identidad
 
-Studio para producir los videos del curso de IA end-to-end:
+Studio para producir videos end-to-end:
 **inspiración → guión → spec → animación Remotion → render mp4**.
 
 No hay frameworks, no hay bases de datos, no hay agentes custom. El file tree
 ES la app. Claude Code ES el runtime. Markdown ES el formato. Las convenciones
 de nombres reemplazan la metadata estructurada.
 
+## Setup check
+
+At the start of every conversation, check if `.claude/studio-config.yaml`
+exists (`test -f`). If it does NOT exist:
+1. Tell the user: "Este studio no está configurado. Ejecutá `/project-setup`
+   para inicializarlo."
+2. Do NOT proceed with any other task until setup is complete.
 
 ## Idioma
 
-- **Contenido** (guiones, specs, narración, descripciones): español.
+- **Contenido** (guiones, specs, narración, descripciones): idioma definido en config.
 - **Código, identificadores, comandos, nombres de carpetas top-level**: inglés.
 - **Frontmatter y metadata**: inglés.
 
 ## Mapa de carpetas
 
 ```
-ai-course/videos/
+videos/
 ├── CLAUDE.md                      ← Layer 1 (este archivo): identidad + routing
 ├── .mcp.json                      ← MCP servers del proyecto (remotion docs)
 ├── .claude/skills/                ← Layer 3: piezas plug-and-play
+│   ├── project-setup/             (wizard de configuración inicial)
 │   ├── youtube-transcript/        (sacar transcripts de YouTube)
 │   └── humanizer/                 (limpiar patrones AI del texto)
 ├── research/                      ← Workspace 1: inspiración / mining
 │   ├── CONTEXT.md
 │   └── transcripts/               (output de youtube-transcript)
-├── scripts/                       ← Workspace 2: guiones del curso
+├── scripts/                       ← Workspace 2: guiones del proyecto
 │   ├── CONTEXT.md
 │   ├── long-form/                 (videos largos, 5–25 min)
 │   └── short-form/                (shorts, 30–90 s)
@@ -37,7 +45,7 @@ ai-course/videos/
 │   ├── images/                    (fotos, screenshots, fondos, SVGs)
 │   ├── videos/                    (clips cortos, b-roll)
 │   ├── audio/                     (música, SFX, voiceovers)
-│   └── logos/                     (logo del curso, iconos, marcas)
+│   └── logos/                     (logo del proyecto, iconos, marcas)
 ├── animations/                    ← Workspace 3: pipeline Remotion
 │   ├── CONTEXT.md
 │   ├── design-system/             (paleta, tipografía, motion, componentes)
@@ -52,7 +60,7 @@ ai-course/videos/
 
 Toda pieza ligada a un episodio comparte el mismo **slug raíz**:
 
-> `YYYY-MM-DD_<kebab-slug>` — ej. `2026-05-22_intro-al-curso`
+> `YYYY-MM-DD_<kebab-slug>` — ej. `2026-05-22_intro-episode`
 
 | Etapa                         | Path                                                          |
 | ----------------------------- | ------------------------------------------------------------- |
@@ -69,6 +77,7 @@ Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesid
 
 | Tarea                              | Workspace activo            | Lee primero                                          | Ignora                                 | Skill / herramienta                |
 | ---------------------------------- | --------------------------- | ---------------------------------------------------- | -------------------------------------- | ---------------------------------- |
+| Configurar el studio (primera vez) | `.claude/`                  | —                                                    | todo                                   | `project-setup`                    |
 | Traer transcripción de YouTube     | `research/`                 | `research/CONTEXT.md`                                 | `scripts/`, `animations/`              | `youtube-transcript`               |
 | Tomar notas / extraer ideas        | `research/`                 | `research/CONTEXT.md`, transcripts del slug           | `animations/`                          | —                                  |
 | Escribir un guión                  | `scripts/long-form` o `/short-form` | `scripts/CONTEXT.md`, `research/transcripts/<slug>*`   | `animations/`                          | —                                  |
@@ -84,6 +93,8 @@ Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesid
 
 **Regla de skills obligatorias**: cuando la columna "Skill / herramienta" indica una skill, invocarla es un **requisito previo** al trabajo, no una sugerencia. Invocarla **antes** de escribir código o generar contenido. No empezar la tarea sin la skill.
 
+**Regla de setup**: todas las tareas (excepto "Configurar el studio") requieren que `.claude/studio-config.yaml` exista. Si no existe, redirigir al usuario a `/project-setup`.
+
 ## Standards
 
 - DRY + SOLID. DDD por capas (research → scripts → specs → build → render); no saltar capas hacia arriba.
@@ -92,7 +103,7 @@ Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesid
 - Una animación = una `composition/` con su propio entry point. No mezclar episodios en una sola comp.
 - Renders nunca se commitean en git si superan 50 MB; usar Git LFS o output externo.
 - Al terminar una etapa, **actualizar el `CONTEXT.md` del workspace** si aprendiste algo nuevo (Layer 2 maintenance).
-- **Iconos**: usar exclusivamente `@phosphor-icons/react`. Está **prohibido** usar iconos ASCII/emoji (🔒, →, ✕, ✓, ●, etc.) como elementos visuales en las animaciones. Phosphor ofrece 6 variantes de peso (thin/light/regular/bold/fill/duotone) — elegir el peso según la jerarquía visual del momento.
+- **Iconos**: usar exclusivamente `@phosphor-icons/react`. Está **prohibido** usar iconos ASCII/emoji como elementos visuales en las animaciones. Phosphor ofrece 6 variantes de peso (thin/light/regular/bold/fill/duotone) — elegir el peso según la jerarquía visual del momento.
 - **Build escena por escena**: al construir una animación, ir beat por beat. Por cada escena: mostrar el fragmento del guión, consultar `_shared/REGISTRY.md` para sugerir componentes existentes, preguntar antes de crear un shared nuevo, construir, iterar con el usuario, y recién avanzar a la siguiente. Ver detalle en `animations/CONTEXT.md`.
 - **Registry de componentes**: `remotion-app/src/_shared/REGISTRY.md` es la **única fuente** para saber qué componentes existen y cómo usarlos. Leer **solo** REGISTRY.md antes de cada escena — **nunca explorar archivos `.tsx`** de `_shared/` ni `compositions/` para descubrir componentes. Solo abrir un `.tsx` si hay que modificarlo.
 

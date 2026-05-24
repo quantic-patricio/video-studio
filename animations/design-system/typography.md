@@ -1,39 +1,40 @@
-# Tipografía
+# Tipografia
 
 ## Font stack
 
-| Rol       | Font            | Fallback      | Por qué                                                |
-| --------- | --------------- | ------------- | ------------------------------------------------------- |
-| Display   | Space Grotesk   | sans-serif    | Geométrica con carácter, moderna, excelente en bold a tamaños grandes. Ideal para títulos que piden atención sin gritar. |
-| Body      | Inter           | sans-serif    | Legibilidad máxima a cualquier tamaño, gran rango de pesos, probada en interfaces oscuras. |
-| Code      | JetBrains Mono  | monospace     | Ligaduras, alta legibilidad en snippets, distingue bien `0/O`, `1/l/I`. |
+> [SETUP REQUIRED] Run `/project-setup` to configure fonts.
+> Fonts must be available via Google Fonts for `@remotion/google-fonts`.
+
+| Rol       | Font            | Fallback      | Por que                                 |
+| --------- | --------------- | ------------- | --------------------------------------- |
+| Display   | [SETUP]         | sans-serif    | [configured by wizard]                  |
+| Body      | [SETUP]         | sans-serif    | [configured by wizard]                  |
+| Code      | [SETUP]         | monospace     | [configured by wizard]                  |
 
 ## Descarga (Google Fonts)
 
 ```
-Space Grotesk: wght@400;500;600;700
-Inter: wght@300;400;500;600;700
-JetBrains Mono: wght@400;500;700
+[SETUP] — wizard generates the exact weights to load
 ```
 
-En Remotion, cargar vía `@remotion/google-fonts` o `staticFile()` con archivos `.woff2`.
+En Remotion, cargar via `@remotion/google-fonts` o `staticFile()` con archivos `.woff2`.
 
-## Escala tipográfica
+## Escala tipografica
 
 Base: 16px. Ratio: ~1.333 (perfect fourth).
 
-| Nivel      | Tamaño | Peso | Tracking    | Font          | Uso                              |
+| Nivel      | Tamano | Peso | Tracking    | Font          | Uso                              |
 | ---------- | ------ | ---- | ----------- | ------------- | -------------------------------- |
-| Display    | 72px   | 700  | -2px        | Space Grotesk | Título principal del episodio    |
-| H1         | 48px   | 700  | -1.5px      | Space Grotesk | Títulos de sección / capítulo    |
-| H2         | 36px   | 600  | -1px        | Space Grotesk | Subtítulos, conceptos clave      |
-| H3         | 24px   | 600  | -0.5px      | Space Grotesk | Tercer nivel, labels grandes     |
-| Body L     | 20px   | 400  | 0           | Inter         | Narración en pantalla            |
-| Body       | 16px   | 400  | 0           | Inter         | Descripciones, bullets           |
-| Caption    | 14px   | 500  | +0.5px      | Inter         | Metadata, footnotes, timestamps  |
-| Label      | 12px   | 600  | +1px        | Inter         | Tags, badges, uppercase labels   |
-| Code       | 16px   | 400  | 0           | JetBrains Mono| Code snippets                    |
-| Code sm    | 14px   | 400  | 0           | JetBrains Mono| Inline code, terminal output     |
+| Display    | 72px   | 700  | -2px        | Display       | Titulo principal del episodio    |
+| H1         | 48px   | 700  | -1.5px      | Display       | Titulos de seccion / capitulo    |
+| H2         | 36px   | 600  | -1px        | Display       | Subtitulos, conceptos clave      |
+| H3         | 24px   | 600  | -0.5px      | Display       | Tercer nivel, labels grandes     |
+| Body L     | 20px   | 400  | 0           | Body          | Narracion en pantalla            |
+| Body       | 16px   | 400  | 0           | Body          | Descripciones, bullets           |
+| Caption    | 14px   | 500  | +0.5px      | Body          | Metadata, footnotes, timestamps  |
+| Label      | 12px   | 600  | +1px        | Body          | Tags, badges, uppercase labels   |
+| Code       | 16px   | 400  | 0           | Code          | Code snippets                    |
+| Code sm    | 14px   | 400  | 0           | Code          | Inline code, terminal output     |
 
 ## Line-height por contexto
 
@@ -44,20 +45,20 @@ Base: 16px. Ratio: ~1.333 (perfect fourth).
 | Body (en pantalla)    | 1.5         |
 | Code                  | 1.6         |
 
-## Pesos y jerarquía
+## Pesos y jerarquia
 
-- **700 (Bold)**: títulos, números destacados, datos clave.
-- **600 (Semibold)**: subtítulos, labels activos.
-- **500 (Medium)**: énfasis en body, captions.
+- **700 (Bold)**: titulos, numeros destacados, datos clave.
+- **600 (Semibold)**: subtitulos, labels activos.
+- **500 (Medium)**: enfasis en body, captions.
 - **400 (Regular)**: texto corrido, descripciones.
-- **300 (Light)**: quotes, texto decorativo grande (solo en Display ≥48px).
+- **300 (Light)**: quotes, texto decorativo grande (solo en Display >= 48px).
 
-## Color de texto por jerarquía
+## Color de texto por jerarquia
 
 | Nivel           | Token            |
 | --------------- | ---------------- |
-| Título / H1     | `fg-primary`     |
-| Subtítulo / H2  | `fg-primary`     |
+| Titulo / H1     | `fg-primary`     |
+| Subtitulo / H2  | `fg-primary`     |
 | Body            | `fg-secondary`   |
 | Caption / Label | `fg-muted`       |
 | Accent text     | `accent-warm`    |

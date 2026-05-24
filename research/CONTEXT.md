@@ -2,7 +2,7 @@
 
 ## Propósito
 
-Recolectar inspiración para los videos del curso: transcripts de videos de YouTube,
+Recolectar inspiración para los videos del proyecto: transcripts de videos de YouTube,
 papers, notas, hooks, frases sueltas. **No** se escriben guiones acá — los guiones
 viven en `scripts/`.
 

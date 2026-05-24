@@ -128,25 +128,15 @@ npx remotion render <comp-id>        # render headless del comp registrado
 
 ## Visual philosophy
 
-Definida en `design-system/`. Resumen ejecutivo:
-- **Mood**: misterioso, cautivador, moderno. Oscuridad con destellos cálidos.
-- **Paleta**: fondos deep-dark (#030712), accent ámbar (#F59E0B) para reveals,
-  accent indigo (#6366F1) para tech/estructura.
-- **Tipografía**: Space Grotesk (display) + Inter (body) + JetBrains Mono (code).
-- **Motion**: easing `bezier(0.16,1,0.3,1)` para entradas, springs para énfasis,
-  todo a 30 fps, max 2 elementos animándose a la vez.
+Definida en `design-system/`. Leer `design-system/CONTEXT.md` para la
+identidad visual completa. Los valores concretos (paleta, tipografía, mood)
+son configurados por el wizard `/project-setup`.
 
 ## Skill: ui-ux-pro-max
 
 Al construir una animación o ajustar el design system, invocar la skill
-`ui-ux-pro-max:ui-ux-pro-max` para obtener guía de diseño alineada al estilo
-del studio.
-
-**Estilo seleccionado**: Modern Dark Cinema.  
-**Query base para la skill**:
-```
-educational video dark cinematic mysterious captivating modern AI course
-```
+`ui-ux-pro-max:ui-ux-pro-max` con los parámetros de estilo definidos
+en `.claude/studio-config.yaml` campo `visual.style_query`.
 
 **Cuándo invocarla**:
 - Al crear un componente visual nuevo que no está en `design-system/components.md`.

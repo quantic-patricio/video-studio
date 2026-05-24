@@ -2,19 +2,19 @@
 
 ## Propósito
 
-Convertir ideas e investigación en **guiones del curso**, listos para grabar
+Convertir ideas e investigación en **guiones del proyecto**, listos para grabar
 voiceover o para generar un spec de animación.
 
 ## Audiencia y tono
 
-> **TODO usuario**: completar esta sección con audiencia objetivo, nivel técnico,
-> tono (formal / cercano / divulgativo), y referencias estilísticas. Sin esto,
-> los guiones generados van a tener voz inconsistente.
+> Configurado en `.claude/studio-config.yaml`. Si el archivo no existe,
+> ejecutá `/project-setup` primero.
 
-Placeholder provisional:
-- **Audiencia**: desarrolladores hispanohablantes que quieren entender IA aplicada.
-- **Tono**: divulgativo, directo, sin jerga innecesaria. Analogías concretas.
-- **Idioma**: español neutro (evitar regionalismos fuertes).
+| Campo     | Valor           |
+| --------- | --------------- |
+| Audiencia | [from config]   |
+| Tono      | [from config]   |
+| Idioma    | [from config]   |
 
 ## Sub-carpetas
 
