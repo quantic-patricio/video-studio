@@ -1,0 +1,59 @@
+# ========================================
+# Episode-specific content
+# ========================================
+# Excluded to keep the repo as a reusable studio template.
+# Everything tied to a specific video slug lives here.
+
+# Raw recordings
+raw-videos/*
+!raw-videos/.gitkeep
+
+# Research transcripts & cache
+research/transcripts/*
+!research/transcripts/.gitkeep
+
+# Scripts (episode-specific)
+scripts/long-form/*
+!scripts/long-form/.gitkeep
+scripts/short-form/*
+!scripts/short-form/.gitkeep
+
+# Animation specs (keep template only)
+animations/specs/*
+!animations/specs/_template.spec.md
+!animations/specs/.gitkeep
+
+# Episode compositions
+animations/remotion-app/src/compositions/*
+!animations/remotion-app/src/compositions/.gitkeep
+
+# Renders
+animations/renders/*
+!animations/renders/.gitkeep
+
+# Episode assets
+assets/images/*
+!assets/images/.gitkeep
+assets/videos/*
+!assets/videos/.gitkeep
+assets/audio/*
+!assets/audio/.gitkeep
+assets/logos/*
+!assets/logos/.gitkeep
+
+# ========================================
+# Dependencies & build artifacts
+# ========================================
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.cache/
+dist/
+out/
+
+# ========================================
+# OS & editor
+# ========================================
+.DS_Store
+.env

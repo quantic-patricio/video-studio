@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  /* Design system tokens — synced with animations/design-system/palette.md */
+  --color-bg-deep: #030712;
+  --color-bg-base: #0a0f1a;
+  --color-bg-elevated: #111827;
+  --color-bg-subtle: #1f2937;
+
+  --color-fg-primary: #F9FAFB;
+  --color-fg-secondary: #9CA3AF;
+  --color-fg-muted: #6B7280;
+
+  --color-accent-warm: #F59E0B;
+  --color-accent-cool: #6366F1;
+
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #6366F1;
+
+  /* Typography — synced with animations/design-system/typography.md */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-code: "JetBrains Mono", monospace;
+}
