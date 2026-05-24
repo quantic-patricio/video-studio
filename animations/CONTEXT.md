@@ -158,6 +158,16 @@ educational video dark cinematic mysterious captivating modern AI course
 - Si el spec ya referencia componentes documentados en el design system.
 - Durante el render (no hay decisiones de diseño en esa fase).
 
+## MCP: Remotion Documentation
+
+El proyecto tiene configurado el MCP `@remotion/mcp` (ver `.mcp.json` en la raíz).
+Expone la documentación oficial de Remotion como herramienta de consulta en tiempo real.
+
+**Cuándo usarlo**: al construir animaciones o renderizar, para consultar APIs exactas
+de Remotion (hooks, componentes, opciones de render, etc.) en lugar de adivinar.
+
+**Cuándo NO usarlo**: durante fases de research, guión o spec — no hay código Remotion ahí.
+
 ## Stack técnico
 
 - **Remotion** (React + TypeScript) para animaciones programáticas.

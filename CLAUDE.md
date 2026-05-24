@@ -21,6 +21,7 @@ de nombres reemplazan la metadata estructurada.
 ```
 ai-course/videos/
 ├── CLAUDE.md                      ← Layer 1 (este archivo): identidad + routing
+├── .mcp.json                      ← MCP servers del proyecto (remotion docs)
 ├── .claude/skills/                ← Layer 3: piezas plug-and-play
 │   ├── youtube-transcript/        (sacar transcripts de YouTube)
 │   └── humanizer/                 (limpiar patrones AI del texto)
@@ -74,8 +75,8 @@ Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesid
 | Humanizar / pulir guión            | `scripts/`                          | `scripts/**/<slug>.md`                                 | `animations/`, `research/`             | `humanizer`                        |
 | Agregar / organizar assets         | `assets/`                   | `assets/CONTEXT.md`                                  | `scripts/`, `animations/`             | —                                  |
 | Generar spec desde un guión        | `animations/specs/`         | `animations/CONTEXT.md`, `animations/design-system/*.md`, `scripts/**/<slug>.md`, `assets/<slug>*` | `remotion-app/src/`  | —                                  |
-| Construir animación desde un spec  | `animations/remotion-app/`  | `animations/specs/<slug>.spec.md`, `animations/CONTEXT.md`, `animations/design-system/*.md`, `_shared/REGISTRY.md`, `assets/<slug>*` | `research/`, `scripts/` | `ui-ux-pro-max:ui-ux-pro-max` |
-| Renderizar a mp4                   | `animations/remotion-app/`  | `package.json`, spec del slug                        | todo lo de arriba del pipeline         | —                                  |
+| Construir animación desde un spec  | `animations/remotion-app/`  | `animations/specs/<slug>.spec.md`, `animations/CONTEXT.md`, `animations/design-system/*.md`, `_shared/REGISTRY.md`, `assets/<slug>*` | `research/`, `scripts/` | `ui-ux-pro-max:ui-ux-pro-max`, MCP `remotion` |
+| Renderizar a mp4                   | `animations/remotion-app/`  | `package.json`, spec del slug                        | todo lo de arriba del pipeline         | MCP `remotion`                     |
 | Definir / ajustar design system    | `animations/design-system/` | `animations/design-system/CONTEXT.md`, `animations/design-system/*.md` | `research/`, `scripts/`                | `ui-ux-pro-max:ui-ux-pro-max`      |
 | Visualizar componentes compartidos | `animations/remotion-app/`  | `_shared/REGISTRY.md`                                | todo lo demás                          | —                                  |
 
