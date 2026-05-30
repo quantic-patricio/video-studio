@@ -27,11 +27,32 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
 
 
 def fail(message: str) -> "NoReturn":  # type: ignore[name-defined]
     print(json.dumps({"ok": False, "error": message}))
     sys.exit(1)
+
+
+def load_dotenv() -> None:
+    """Load `<project_root>/.env` into os.environ without overriding existing
+    vars, so an exported GEMINI_API_KEY always wins over the file. Tiny manual
+    KEY=VALUE parser — no external dependency. Lines that are blank, comments,
+    or lack `=` are skipped; surrounding quotes on the value are stripped."""
+    # .../<root>/.claude/skills/gemini-video/scripts/analyze_video.py -> parents[4] = root
+    env_path = Path(__file__).resolve().parents[4] / ".env"
+    if not env_path.exists():
+        return
+    for line in env_path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if key and key not in os.environ:
+            os.environ[key] = value
 
 
 def main() -> None:
@@ -45,9 +66,10 @@ def main() -> None:
     parser.add_argument("--schema-file")
     args = parser.parse_args()
 
+    load_dotenv()
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        fail("GEMINI_API_KEY is not set in the environment.")
+        fail("GEMINI_API_KEY is not set (export it or add it to the project .env).")
 
     # Resolve the analysis brief.
     if args.prompt_file:

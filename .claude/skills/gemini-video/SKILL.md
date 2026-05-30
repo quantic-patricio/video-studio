@@ -22,12 +22,17 @@ script, spec, or narration — only to *analyze* what it observes.
 1. **Enabled**: `.claude/studio-config.yaml` → `integrations.gemini.enabled: true`.
    If false/absent → tell the user Gemini mode is off and fall back to the
    transcript path (see narration-style). Do NOT proceed.
-2. **API key**: `GEMINI_API_KEY` is set in the environment.
+2. **API key**: `GEMINI_API_KEY` is available — either exported in the
+   environment or present in the project-local `.env` (gitignored). An exported
+   var wins over `.env`.
    ```bash
-   test -n "$GEMINI_API_KEY" && echo OK || echo MISSING
+   { [ -n "$GEMINI_API_KEY" ] || { [ -f .env ] && grep -Eq '^GEMINI_API_KEY=.+' .env; }; } \
+     && echo OK || echo MISSING
    ```
-   If MISSING → tell the user: "Exportá `GEMINI_API_KEY` (la key es de pago y no
-   se commitea) y reintentá." Stop.
+   If MISSING → run `bash .claude/skills/gemini-video/scripts/setup.sh` (it
+   scaffolds `.env` from `.env.example`), tell the user: "Pegá tu `GEMINI_API_KEY`
+   en `./.env` (es de pago y no se commitea) y reintentá." Stop. The analyzer
+   loads `.env` itself, so no `export` is needed.
 3. **Public video**: Gemini only accepts public videos (not private/unlisted).
 
 ## Cost gate — confirm before spending

@@ -84,7 +84,8 @@ richer voice profile than transcript text. Use `AskUserQuestion`:
 
 - "¿Querés habilitar el modo Gemini (análisis multimodal de video, **de pago**)?"
   - No (recommended default) — usa transcript + Haiku, sin costo.
-  - Sí — requiere una `GEMINI_API_KEY` (la pedimos al cerrar el setup).
+  - Sí — requiere una `GEMINI_API_KEY` (la configuramos **antes** de perfilar la
+    voz, en el Step 2.1.a — no al final).
   → `integrations.gemini.enabled` (true/false). If yes, also record
   `integrations.gemini.model` (default `gemini-2.5-flash`).
 
@@ -92,16 +93,47 @@ This flag is project-wide: `narration-style` and research mining both honor it.
 
 #### Step 2.1.a — Reference videos (preferred)
 
-Ask (free text): "¿Hay algún creador o video cuya **narración** te gustaría
-emular? Pegá 1–N URLs de YouTube (idealmente del mismo creador), o escribí
-'skip'."
+Ask (free text), making the two inputs distinct:
 
-- If the user provides URLs → invoke the **`narration-style`** skill with them.
-  It fetches the transcripts into `research/references/` and returns a voice
-  profile (`person`, `pacing`, `jargon`, `devices`, `signature_moves`). Use that
-  profile to **pre-fill** the four questions below — present each with the
-  derived value already selected so the user just confirms or adjusts. Carry
-  `signature_moves` and the source URLs into the `narration` config block.
+> "Para perfilar tu voz narrativa:
+> 1. Pegá 1–N URLs de **videos específicos** de YouTube cuya narración te
+>    guste (formato `youtube.com/watch?v=...`). **Un link de canal no sirve** —
+>    necesito videos puntuales para analizarlos.
+> 2. (Opcional) ¿Cómo se llama el **creador**? Con el nombre puedo investigar su
+>    estilo en la web y enriquecer el perfil.
+>
+> O escribí 'skip' para auto-reportar las dimensiones."
+
+Capture the **video URLs** and the optional **creator name** separately.
+
+**Key gate (only if Gemini mode is ON).** Before invoking `narration-style`,
+ensure the key is ready so we use the rich Gemini path instead of silently
+degrading to transcript:
+
+1. Run `bash .claude/skills/gemini-video/scripts/setup.sh` — it provisions the
+   venv AND scaffolds `./.env` from `.env.example` if missing.
+2. Check the key (`.env`-aware; an exported var also counts):
+   ```bash
+   { [ -n "$GEMINI_API_KEY" ] || { [ -f .env ] && grep -Eq '^GEMINI_API_KEY=.+' .env; }; } \
+     && echo OK || echo MISSING
+   ```
+3. If MISSING → **pause**. Tell the user: "Pegá tu `GEMINI_API_KEY` en `./.env`
+   (conseguila en https://aistudio.google.com/apikey — es de pago y no se
+   commitea), avisame y re-chequeo." Re-run the check when they confirm. Do NOT
+   silently fall back. If the user prefers not to set it now, ask explicitly via
+   `AskUserQuestion`: *seguir con transcript (sin Gemini) ahora* vs *skipear el
+   perfilado de referencia* — never assume.
+
+Then dispatch:
+
+- If the user provided video URLs (and, for Gemini, the key is OK) → invoke the
+  **`narration-style`** skill with the URLs **and** the optional creator name. It
+  returns a voice profile (`person`, `pacing`, `jargon`, `devices`,
+  `signature_moves`, plus `creator_context` if a creator was given). Use it to
+  **pre-fill** the four questions below — present each with the derived value
+  already selected so the user just confirms or adjusts. Carry `signature_moves`,
+  `creator_context`, the source URLs (`reference_videos`) and the creator name
+  (`reference_creator`) into the `narration` config block.
 - If the user writes 'skip' (or the skill returns nothing usable) → ask the four
   questions blank, as below.
 
@@ -211,7 +243,9 @@ narration:
   jargon: "<none | explained | free>"
   devices: [<rhetorical-questions, analogies, humor, storytelling — or empty>]
   signature_moves: "<one paragraph from the reference profile, or empty>"
-  reference_videos: [<URLs from Step 2.1.a, or empty>]
+  reference_videos: [<specific video URLs from Step 2.1.a, or empty>]
+  reference_creator: "<creator name from Step 2.1.a, or empty>"
+  creator_context: "<2-4 web-derived bullets about the creator's style, or empty>"
 
 visual:
   mood: "<from Phase 3>"
@@ -348,11 +382,13 @@ Next steps:
 3. Start creating episodes!
 ```
 
-If `integrations.gemini.enabled` is true, add to the next steps:
+If `integrations.gemini.enabled` is true, add a reminder (the key was normally
+already set during Step 2.1.a — this just covers the case it was skipped):
 ```
-Gemini mode is ON. Before using it:
-- export GEMINI_API_KEY="<tu key>"  (es de pago y NO se commitea)
-- bash .claude/skills/gemini-video/scripts/setup.sh  (instala el SDK, una vez)
+Gemini mode is ON. The key lives in ./.env (gitignored, paid):
+- If ./.env still has an empty GEMINI_API_KEY=, paste your key there.
+  Get one at https://aistudio.google.com/apikey
+- The gemini-video skill loads ./.env automatically — no export needed.
 ```
 
 ## Error handling

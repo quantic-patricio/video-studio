@@ -29,9 +29,16 @@ The analysis is identical in both modes. Only the persistence step differs.
 
 ## Inputs
 
-- **1–N YouTube URLs.** If the user gives none, ask for them. Recommend **a
-  single creator** — N videos from one creator yields a robust profile; mixing
-  creators dilutes the voice. If the user insists on mixing, warn and proceed.
+- **1–N specific-video YouTube URLs** (`youtube.com/watch?v=...` or `youtu.be/...`).
+  If the user gives none, ask for them. Recommend **a single creator** — N videos
+  from one creator yields a robust profile; mixing creators dilutes the voice. If
+  the user insists on mixing, warn and proceed.
+  - **Channel-URL guard:** a channel link (`/@handle`, `/channel/`, `/c/`,
+    `/user/`, or a bare `youtube.com/<name>`) **cannot** be fetched or watched.
+    If a URL matches one of these, do NOT pass it downstream — tell the user it
+    is a channel link and ask for the specific video(s) instead.
+- **Creator name** *(optional)*. If given, drives the web-research pass (Step 1c)
+  that enriches the profile with the creator's documented style.
 - **Language** of the videos (default `es,en`). Ask before fetching.
 
 ## Step 0 — Choose the analysis path
@@ -70,6 +77,41 @@ Cache each result at `research/references/<slug>.gemini.json`.
 When done, hand the merged profile to Step 3 (skip Step 2 — Gemini already
 classified the dimensions). Remember: Gemini only analyzes; **never** ask it to
 write narration.
+
+## Step 1c — Creator web research (optional, runs on either path)
+
+Only if a **creator name** was provided. This is a **secondary, web-derived**
+signal — context about the creator's reputation/style, NOT a substitute for what
+the transcript or video shows. The observed analysis always wins; web findings
+only frame it.
+
+Spawn **one** Agent with `model: "haiku"` and `description: "creator web research"`.
+Its job: search the web for how this creator narrates/teaches and return a short,
+grounded summary. Pass this prompt (replace `{{CREATOR_NAME}}`):
+
+````
+You are researching a content creator's NARRATION and TEACHING style — not their
+biography. Use WebSearch to find how "{{CREATOR_NAME}}" presents ideas.
+
+Focus on: cadence/energy, how they build explanations (first principles?
+analogies? visuals?), signature framings or catchphrases, tone with the audience,
+and recurring structural habits (hooks, transitions, closings).
+
+Rules:
+- Ground every bullet in something you actually found; if searches return little,
+  say so and return fewer bullets. Do NOT invent or pad.
+- This is about STYLE/reputation, not verbatim content. Never quote scripts.
+
+Reply with ONLY a fenced ```yaml block:
+
+```yaml
+creator_context: |
+  - <2-4 short bullets on the creator's narration/teaching style, web-grounded>
+  - <or a single line stating little was found>
+```
+````
+
+Carry the returned `creator_context` into Step 3 as supplementary context.
 
 ## Step 2 — Analyze (delegate to Haiku)
 
@@ -123,18 +165,25 @@ sources:
 
 ## Step 3 — Persist (depends on mode)
 
+If Step 1c ran, merge its `creator_context` into the profile as a separate field
+(keep it distinct from `signature_moves` — observed style vs. web reputation).
+
 **Wizard mode** (`project-setup` called this skill): do NOT write any file.
-Return the analyst's `yaml` block verbatim to the caller. The wizard pre-fills
-its narration questions from it and confirms with the user.
+Return the analyst's `yaml` block verbatim to the caller (including
+`creator_context` if present). The wizard pre-fills its narration questions from
+it and confirms with the user.
 
 **Standalone mode** (the user ran this skill directly):
 1. Show the user the profile and let them adjust any value.
 2. Write/update the **"Voz narrativa"** section of `scripts/CONTEXT.md` with the
-   confirmed values (person, pacing, jargon, devices, signature_moves) plus a
-   `> Derivado de: <urls>` provenance line.
+   confirmed values (person, pacing, jargon, devices, signature_moves), a
+   `creator_context` sub-section marked *(contexto web sobre el creador)* if one
+   was derived, plus a `> Derivado de: <urls>` (and `creador: <name>`) provenance
+   line.
 3. Remind the user that `scripts/CONTEXT.md` is the runtime source read when
    writing scripts, and that the matching `narration:` block in
-   `.claude/studio-config.yaml` should be updated to stay in sync.
+   `.claude/studio-config.yaml` (`signature_moves`, `creator_context`,
+   `reference_videos`, `reference_creator`) should be updated to stay in sync.
 
 ## Notes
 

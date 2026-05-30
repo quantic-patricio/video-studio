@@ -14,6 +14,16 @@ MIN_PY_MINOR=10
 
 REQ_HASH="$(shasum -a 256 "$REQ_FILE" | awk '{print $1}')"
 
+# Scaffold the project-local .env from the committed example so the key has a
+# home to live in. Runs on every invocation (before the venv early-exit) so the
+# file appears even when the venv is already provisioned. Never overwrites an
+# existing .env. The .env is gitignored; .env.example is committed.
+PROJECT_ROOT="$(cd "$SKILL_DIR/../../.." && pwd)"
+if [[ ! -f "$PROJECT_ROOT/.env" && -f "$PROJECT_ROOT/.env.example" ]]; then
+  cp "$PROJECT_ROOT/.env.example" "$PROJECT_ROOT/.env"
+  echo "[setup] created .env from .env.example — paste your GEMINI_API_KEY into $PROJECT_ROOT/.env"
+fi
+
 if [[ -d "$VENV_DIR" && -f "$STAMP_FILE" && "$(cat "$STAMP_FILE")" == "$REQ_HASH" ]]; then
   echo "[setup] venv already provisioned (hash $REQ_HASH)"
   exit 0
