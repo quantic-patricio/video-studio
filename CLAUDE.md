@@ -32,10 +32,13 @@ videos/
 ├── .claude/skills/                ← Layer 3: piezas plug-and-play
 │   ├── project-setup/             (wizard de configuración inicial)
 │   ├── youtube-transcript/        (sacar transcripts de YouTube)
+│   ├── narration-style/           (perfil de voz desde videos de referencia)
+│   ├── gemini-video/              (análisis multimodal de video — opcional, de pago)
 │   └── humanizer/                 (limpiar patrones AI del texto)
 ├── research/                      ← Workspace 1: inspiración / mining
 │   ├── CONTEXT.md
-│   └── transcripts/               (output de youtube-transcript)
+│   ├── transcripts/               (output de youtube-transcript, por episodio)
+│   └── references/                (transcripts de referencia para estilo narrativo)
 ├── scripts/                       ← Workspace 2: guiones del proyecto
 │   ├── CONTEXT.md
 │   ├── long-form/                 (videos largos, 5–25 min)
@@ -65,7 +68,7 @@ Toda pieza ligada a un episodio comparte el mismo **slug raíz**:
 | Etapa                         | Path                                                          |
 | ----------------------------- | ------------------------------------------------------------- |
 | Transcripción de referencia   | `research/transcripts/<slug>.md`                              |
-| Guión                         | `scripts/{long-form,short-form}/<slug>.md`                    |
+| Guión (crudo IA → humanizado) | `scripts/{long-form,short-form}/<slug>.ai.md` → `<slug>.md`   |
 | Spec                          | `animations/specs/<slug>.spec.md`                             |
 | Assets del episodio           | `assets/{images,videos,audio}/<slug>_<descriptor>.<ext>`      |
 | Composition Remotion          | `animations/remotion-app/src/compositions/<slug>/`            |
@@ -79,9 +82,10 @@ Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesid
 | ---------------------------------- | --------------------------- | ---------------------------------------------------- | -------------------------------------- | ---------------------------------- |
 | Configurar el studio (primera vez) | `.claude/`                  | —                                                    | todo                                   | `project-setup`                    |
 | Traer transcripción de YouTube     | `research/`                 | `research/CONTEXT.md`                                 | `scripts/`, `animations/`              | `youtube-transcript`               |
-| Tomar notas / extraer ideas        | `research/`                 | `research/CONTEXT.md`, transcripts del slug           | `animations/`                          | —                                  |
+| Tomar notas / extraer ideas        | `research/`                 | `research/CONTEXT.md`, transcripts del slug           | `animations/`                          | `gemini-video` (opcional, de pago) |
+| Analizar estilo narrativo de referencia | `research/`            | `research/CONTEXT.md`, `research/references/*`         | `animations/`, `scripts/` (episodios)  | `narration-style` (+ `gemini-video` opcional) |
 | Escribir un guión                  | `scripts/long-form` o `/short-form` | `scripts/CONTEXT.md`, `research/transcripts/<slug>*`   | `animations/`                          | —                                  |
-| Humanizar / pulir guión            | `scripts/`                          | `scripts/**/<slug>.md`                                 | `animations/`, `research/`             | `humanizer`                        |
+| Humanizar / pulir guión            | `scripts/`                          | `scripts/**/<slug>.ai.md`                              | `animations/`, `research/`             | `humanizer`                        |
 | Agregar / organizar assets         | `assets/`                   | `assets/CONTEXT.md`                                  | `scripts/`, `animations/`             | —                                  |
 | Generar spec desde un guión        | `animations/specs/`         | `animations/CONTEXT.md`, `animations/design-system/*.md`, `scripts/**/<slug>.md`, `assets/<slug>*` | `remotion-app/src/`  | —                                  |
 | Construir animación desde un spec  | `animations/remotion-app/`  | `animations/specs/<slug>.spec.md`, `animations/CONTEXT.md`, `animations/design-system/*.md`, `_shared/REGISTRY.md`, `assets/<slug>*` | `research/`, `scripts/` | `ui-ux-pro-max:ui-ux-pro-max`, MCP `remotion` |

@@ -70,6 +70,73 @@ Use `AskUserQuestion`:
    - Conversational / friendly
    → `audience.tone`
 
+### Step 2.1 — Narration voice
+
+`tone` is the broad register; the four dimensions below define the fine-grained
+narration voice. There are two ways to fill them — try to **derive from real
+examples** first, fall back to self-report.
+
+#### Step 2.1.0 — Analysis mode (optional, paid)
+
+Ask once whether to enable the **Gemini** integration — a paid multimodal mode
+that *watches* reference videos (delivery, cadence, visual style) for a much
+richer voice profile than transcript text. Use `AskUserQuestion`:
+
+- "¿Querés habilitar el modo Gemini (análisis multimodal de video, **de pago**)?"
+  - No (recommended default) — usa transcript + Haiku, sin costo.
+  - Sí — requiere una `GEMINI_API_KEY` (la pedimos al cerrar el setup).
+  → `integrations.gemini.enabled` (true/false). If yes, also record
+  `integrations.gemini.model` (default `gemini-2.5-flash`).
+
+This flag is project-wide: `narration-style` and research mining both honor it.
+
+#### Step 2.1.a — Reference videos (preferred)
+
+Ask (free text): "¿Hay algún creador o video cuya **narración** te gustaría
+emular? Pegá 1–N URLs de YouTube (idealmente del mismo creador), o escribí
+'skip'."
+
+- If the user provides URLs → invoke the **`narration-style`** skill with them.
+  It fetches the transcripts into `research/references/` and returns a voice
+  profile (`person`, `pacing`, `jargon`, `devices`, `signature_moves`). Use that
+  profile to **pre-fill** the four questions below — present each with the
+  derived value already selected so the user just confirms or adjusts. Carry
+  `signature_moves` and the source URLs into the `narration` config block.
+- If the user writes 'skip' (or the skill returns nothing usable) → ask the four
+  questions blank, as below.
+
+#### Step 2.1.b — Confirm / self-report the four dimensions
+
+Use `AskUserQuestion` (batch into one call). Adapt the phrasing and options to
+the chosen `content_language` — the examples below assume Spanish content. If a
+reference profile exists, pre-select its values:
+
+1. "How should the narrator address the viewer?" — options:
+   - Tú (close, neutral Latin American)
+   - Vos (Rioplatense)
+   - Usted (formal, distant)
+   - Nosotros (inclusive — "vamos a ver…")
+   → `narration.person`
+
+2. "What sentence rhythm should the narration have?" — options:
+   - Short & punchy (clipped sentences, fast cadence)
+   - Developed & explanatory (longer, unfolding sentences)
+   - Mixed (alternates depending on the beat)
+   → `narration.pacing`
+
+3. "How much technical jargon is allowed?" — options:
+   - None (everything in plain language)
+   - Always explained (jargon is fine if defined on first use)
+   - Free (expert audience, no need to explain)
+   → `narration.jargon`
+
+4. "Which rhetorical devices should the narration use?" — multiSelect:
+   - Rhetorical questions to the viewer
+   - Analogies & metaphors
+   - Light humor
+   - Storytelling / anecdotes
+   → `narration.devices` (array)
+
 ## Phase 3 — Visual Identity
 
 Use `AskUserQuestion`:
@@ -148,7 +215,11 @@ structure of the existing placeholder templates but fill in real values:
 ### Step 4.4 — Update CONTEXT.md files
 
 1. **`scripts/CONTEXT.md`** — fill in the audience, tone, and language sections
-   with the user's answers. Keep the rest of the file structure.
+   with the user's answers. Also fill the **"Voz narrativa"** section from the
+   `narration` block (person, pacing, jargon, devices, and `signature_moves` if
+   a reference profile was derived). This section is the runtime source the
+   script-writing flow reads, so it must mirror the config `narration` block.
+   Keep the rest of the file structure.
 
 2. **`animations/CONTEXT.md`** — update the "Visual philosophy" summary section
    and the "Skill: ui-ux-pro-max" section with the new style query and mood.
@@ -209,6 +280,14 @@ audience:
   profile: "<from Phase 2>"
   tone: "<from Phase 2>"
 
+narration:
+  person: "<tú | vos | usted | nosotros>"
+  pacing: "<short | developed | mixed>"
+  jargon: "<none | explained | free>"
+  devices: [<rhetorical-questions, analogies, humor, storytelling — or empty>]
+  signature_moves: "<one paragraph from the reference profile, or empty>"
+  reference_videos: [<URLs from Step 2.1.a, or empty>]
+
 visual:
   mood: "<from Phase 3>"
   fps: <number>
@@ -216,6 +295,11 @@ visual:
   brand_colors: [<hex codes or empty>]
   references: "<from Phase 3>"
   style_query: "<built query for ui-ux-pro-max>"
+
+integrations:
+  gemini:
+    enabled: <true | false from Step 2.1.0>
+    model: "gemini-2.5-flash"   # only used when enabled; key comes from GEMINI_API_KEY env
 
 setup_version: 1
 setup_date: "<today YYYY-MM-DD>"
@@ -236,6 +320,13 @@ Next steps:
 1. cd animations/remotion-app && npm install
 2. npm run dev  (preview in Remotion Studio)
 3. Start creating episodes!
+```
+
+If `integrations.gemini.enabled` is true, add to the next steps:
+```
+Gemini mode is ON. Before using it:
+- export GEMINI_API_KEY="<tu key>"  (es de pago y NO se commitea)
+- bash .claude/skills/gemini-video/scripts/setup.sh  (instala el SDK, una vez)
 ```
 
 ## Error handling

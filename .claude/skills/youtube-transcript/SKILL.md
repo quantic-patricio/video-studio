@@ -11,10 +11,11 @@ should only validate inputs and spawn the agent — nothing else.
 ## CRITICAL — Single invocation guard
 
 **This skill must be invoked exactly ONCE per video per conversation.** Before
-spawning the Haiku agent, run this check:
+spawning the Haiku agent, run this check (replace `<DEST_DIR>` with the
+destination directory — see Inputs; default `research/transcripts`):
 
 ```bash
-grep -rl "video_id: <VIDEO_ID>" research/transcripts/*.md 2>/dev/null
+grep -rl "video_id: <VIDEO_ID>" <DEST_DIR>/*.md 2>/dev/null
 ```
 
 - If a file is found → the transcript **already exists**. Do NOT spawn the agent.
@@ -42,14 +43,22 @@ Extract the video ID from the URL before the idempotency check above:
 Optional: language preference (default `es,en`). **Always ask the user what language
 the video is in** before launching — passing the wrong default wastes API calls.
 
+Optional: **destination directory** (relative to project root, default
+`research/transcripts`). Callers that fetch non-episode material — e.g. the
+`narration-style` skill fetching reference videos — pass `research/references`
+instead. The directory must already be a sibling under `research/`; the agent
+creates it if missing. Use the same directory in the idempotency check above.
+
 ## Execution
 
 **Do not run the workflow yourself.** Spawn a single Agent with `model: "haiku"` and
-pass it the prompt below, replacing the three placeholders:
+pass it the prompt below, replacing the four placeholders:
 
 - `{{VIDEO_URL}}` — the URL or ID the user gave.
 - `{{LANG}}` — the language code(s) (e.g. `es`, `en`, `es,en`).
 - `{{PROJECT_ROOT}}` — the absolute path to this project's root directory.
+- `{{DEST_DIR}}` — destination directory relative to project root (default
+  `research/transcripts`; `research/references` for reference material).
 
 Use `description: "youtube-transcript fetch"` for the agent.
 
@@ -62,12 +71,13 @@ Do NOT ask questions — just execute.
 PROJECT_ROOT = {{PROJECT_ROOT}}
 VIDEO_URL    = {{VIDEO_URL}}
 LANG         = {{LANG}}
+DEST_DIR     = {{DEST_DIR}}
 
 ### Step 0 — Idempotency check
 
 Run:
 ```
-grep -rl "video_id:" ${PROJECT_ROOT}/research/transcripts/*.md 2>/dev/null | head -5
+grep -rl "video_id:" ${PROJECT_ROOT}/${DEST_DIR}/*.md 2>/dev/null | head -5
 ```
 
 Then check if any of those files contain a `video_id` matching this video.
@@ -90,16 +100,16 @@ If it fails because python3 is missing, report the error and stop.
 
 Run:
 ```
-mkdir -p ${PROJECT_ROOT}/research/transcripts && \
+mkdir -p ${PROJECT_ROOT}/${DEST_DIR} && \
 ${PROJECT_ROOT}/.claude/skills/youtube-transcript/.venv/bin/python \
   ${PROJECT_ROOT}/.claude/skills/youtube-transcript/scripts/fetch_transcript.py \
   "${VIDEO_URL}" \
-  "${PROJECT_ROOT}/research/transcripts" \
+  "${PROJECT_ROOT}/${DEST_DIR}" \
   --lang ${LANG}
 ```
 
 The script prints JSON to stdout. Save it to a temp file at
-`${PROJECT_ROOT}/research/transcripts/.cache/payload.json` so you can read it
+`${PROJECT_ROOT}/${DEST_DIR}/.cache/payload.json` so you can read it
 without re-running yt-dlp.
 
 If the script fails, report the error verbatim and stop.
@@ -117,7 +127,7 @@ captions in the requested language(s) and stop.
 
 ### Step 4 — Build the markdown file
 
-Generate `${PROJECT_ROOT}/research/transcripts/<slug>.md` where `<slug>` is the
+Generate `${PROJECT_ROOT}/${DEST_DIR}/<slug>.md` where `<slug>` is the
 video title in kebab-case (ASCII, lowercase, no punctuation, max ~80 chars).
 If a file with that name already exists, append `-<video_id>`.
 
@@ -198,5 +208,5 @@ Example: `DONE: research/transcripts/intro-al-curso.md · 12:34 · 5 chapters`
 ## Notes
 
 - The venv is local to the skill (`.claude/skills/youtube-transcript/.venv/`). Do not commit it.
-- Raw VTT + info.json stay in `research/transcripts/.cache/<video_id>/`.
+- Raw VTT + info.json stay in `<DEST_DIR>/.cache/<video_id>/` (default `research/transcripts`).
 - `yt-dlp` version is pinned in `requirements.txt`.

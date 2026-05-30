@@ -1,0 +1,4 @@
+# Gemini multimodal video analysis SDK (new unified SDK: `from google import genai`).
+# The YouTube-URL feature is in preview; bump this pin as new versions ship.
+# Requires Python >= 3.10.
+google-genai==2.7.0
