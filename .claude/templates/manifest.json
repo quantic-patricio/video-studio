@@ -1,0 +1,16 @@
+{
+  "_comment": "Files materialized by .claude/skills/project-setup/scripts/materialize.py. Each path is BOTH the template location (under .claude/templates/<path>) and the runtime destination (under project root). The studio-maintainer skill edits this list when adding/removing a templated file.",
+  "paths": [
+    "scripts/CONTEXT.md",
+    "research/CONTEXT.md",
+    "assets/CONTEXT.md",
+    "animations/CONTEXT.md",
+    "animations/design-system/CONTEXT.md",
+    "animations/design-system/palette.md",
+    "animations/design-system/typography.md",
+    "animations/design-system/motion.md",
+    "animations/design-system/components.md",
+    "animations/remotion-app/src/_shared/theme.ts",
+    "animations/remotion-app/src/style.css"
+  ]
+}

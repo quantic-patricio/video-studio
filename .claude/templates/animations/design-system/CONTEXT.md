@@ -5,9 +5,9 @@
 > Configurado por el wizard `/project-setup`. Si los archivos de abajo
 > muestran placeholders, ejecutá el wizard primero.
 
-**Mood**: [configured by wizard]
-**Inspiracion**: [configured by wizard]
-**Anti-patrones**: [configured by wizard]
+**Mood**: {{visual.mood}}
+**Inspiracion**: {{design.inspiration}}
+**Anti-patrones**: {{design.anti_patterns}}
 
 ## Archivos del sistema
 

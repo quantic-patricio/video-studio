@@ -15,9 +15,9 @@
 
 | Propiedad   | Valor              |
 | ----------- | ------------------ |
-| FPS         | [SETUP]            |
-| Resolucion  | [SETUP] (16:9)     |
-| Resolucion vertical | [SETUP] (9:16, shorts) |
+| FPS         | {{visual.fps}}            |
+| Resolucion  | {{visual.dimensions}} (16:9)     |
+| Resolucion vertical | 1080x1920 (9:16, shorts) |
 
 ## Easing curves (Remotion)
 

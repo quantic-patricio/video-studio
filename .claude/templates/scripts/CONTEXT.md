@@ -12,9 +12,9 @@ voiceover o para generar un spec de animación.
 
 | Campo     | Valor           |
 | --------- | --------------- |
-| Audiencia | [from config]   |
-| Tono      | [from config]   |
-| Idioma    | [from config]   |
+| Audiencia | {{audience.profile}}   |
+| Tono      | {{audience.tone}}   |
+| Idioma    | {{project.content_language}}   |
 
 ## Voz narrativa
 
@@ -25,12 +25,12 @@ voiceover o para generar un spec de animación.
 
 | Dimensión          | Valor          | Qué define                                  |
 | ------------------ | -------------- | ------------------------------------------- |
-| Persona gramatical | [from config]  | Cómo se dirige al espectador (tú/vos/etc).  |
-| Ritmo de frase     | [from config]  | Cadencia: cortas y punchy / desarrolladas.  |
-| Jerga técnica      | [from config]  | Nivel de accesibilidad del vocabulario.     |
-| Recursos retóricos | [from config]  | Preguntas, analogías, humor, storytelling.  |
+| Persona gramatical | {{narration.person}}  | Cómo se dirige al espectador (tú/vos/etc).  |
+| Ritmo de frase     | {{narration.pacing}}  | Cadencia: cortas y punchy / desarrolladas.  |
+| Jerga técnica      | {{narration.jargon}}  | Nivel de accesibilidad del vocabulario.     |
+| Recursos retóricos | {{narration.devices}}  | Preguntas, analogías, humor, storytelling.  |
 
-**Signature moves**: [from config — párrafo derivado del perfil de referencia, o vacío]
+**Signature moves**: {{narration.signature_moves}}
 
 Aplicá esta voz al redactar el `<slug>.ai.md`; el `humanizer` la respeta al
 generar el `<slug>.md`.

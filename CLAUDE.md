@@ -29,12 +29,15 @@ exists (`test -f`). If it does NOT exist:
 videos/
 ├── CLAUDE.md                      ← Layer 1 (este archivo): identidad + routing
 ├── .mcp.json                      ← MCP servers del proyecto (remotion docs)
-├── .claude/skills/                ← Layer 3: piezas plug-and-play
-│   ├── project-setup/             (wizard de configuración inicial)
-│   ├── youtube-transcript/        (sacar transcripts de YouTube)
-│   ├── narration-style/           (perfil de voz desde videos de referencia)
-│   ├── gemini-video/              (análisis multimodal de video — opcional, de pago)
-│   └── humanizer/                 (limpiar patrones AI del texto)
+├── .claude/
+│   ├── templates/                 ← fuente de verdad de los archivos materializados (harness)
+│   └── skills/                    ← Layer 3: piezas plug-and-play
+│       ├── project-setup/             (wizard inicial + materialize.py)
+│       ├── studio-maintainer/         (maintainer-only: evoluciona el template system — fuera del routing)
+│       ├── youtube-transcript/        (sacar transcripts de YouTube)
+│       ├── narration-style/           (perfil de voz desde videos de referencia)
+│       ├── gemini-video/              (análisis multimodal de video — opcional, de pago)
+│       └── humanizer/                 (limpiar patrones AI del texto)
 ├── research/                      ← Workspace 1: inspiración / mining
 │   ├── CONTEXT.md
 │   ├── transcripts/               (output de youtube-transcript, por episodio)
@@ -75,6 +78,22 @@ Toda pieza ligada a un episodio comparte el mismo **slug raíz**:
 | Render                        | `animations/renders/<slug>.mp4`                               |
 
 Con esto, **una sola búsqueda por slug encuentra todo lo asociado** sin necesidad de base de datos ni índice.
+
+## Sistema de templates (harness vs proyecto)
+
+Los archivos de `animations/design-system/` y los `CONTEXT.md` de cada workspace
+**no se commitean**: se **materializan por proyecto** desde `.claude/templates/`
+con `project-setup/scripts/materialize.py`, que sustituye placeholders
+`{{config.path}}` con los valores de `.claude/studio-config.yaml`. La fuente de
+verdad (el harness) son los **templates**; los archivos runtime son **del usuario**
+y están gitignored — los puede editar libremente según fluya su proyecto.
+
+- Para cambiar un valor de un proyecto → editar el config y re-correr
+  `materialize.py` (o editar el archivo runtime directamente; es suyo).
+- Para cambiar un default de **todos** los proyectos → editar el **template**, no
+  el runtime. Eso lo administra la skill `studio-maintainer` (maintainer-only,
+  deliberadamente **fuera del routing table**: quien solo hace videos nunca rutea
+  ahí). Invocarla por nombre explícito.
 
 ## Routing table — la regla más importante
 

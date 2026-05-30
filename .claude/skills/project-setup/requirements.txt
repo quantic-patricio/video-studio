@@ -1,0 +1,3 @@
+# Dependencies for the project-setup materialize.py renderer.
+# Only YAML parsing is needed; everything else is Python stdlib.
+PyYAML==6.0.2

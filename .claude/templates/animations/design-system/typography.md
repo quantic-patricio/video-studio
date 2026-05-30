@@ -2,19 +2,18 @@
 
 ## Font stack
 
-> [SETUP REQUIRED] Run `/project-setup` to configure fonts.
-> Fonts must be available via Google Fonts for `@remotion/google-fonts`.
+> Fonts cargadas via Google Fonts (`@remotion/google-fonts`).
 
 | Rol       | Font            | Fallback      | Por que                                 |
 | --------- | --------------- | ------------- | --------------------------------------- |
-| Display   | [SETUP]         | sans-serif    | [configured by wizard]                  |
-| Body      | [SETUP]         | sans-serif    | [configured by wizard]                  |
-| Code      | [SETUP]         | monospace     | [configured by wizard]                  |
+| Display   | {{design.typography.display_font}} | sans-serif | {{design.typography.display_rationale}} |
+| Body      | {{design.typography.body_font}}    | sans-serif | {{design.typography.body_rationale}}    |
+| Code      | {{design.typography.code_font}}    | monospace  | {{design.typography.code_rationale}}    |
 
 ## Descarga (Google Fonts)
 
 ```
-[SETUP] — wizard generates the exact weights to load
+{{design.typography.google_fonts_load}}
 ```
 
 En Remotion, cargar via `@remotion/google-fonts` o `staticFile()` con archivos `.woff2`.
