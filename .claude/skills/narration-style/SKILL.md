@@ -187,6 +187,13 @@ it and confirms with the user.
 
 ## Notes
 
+- **Style, not dialect (nor language).** Model the creator's *style* — cadence,
+  how they build intuition, devices, signature moves — never their regional
+  variety or language. The dialect always comes from `narration.dialect` in the
+  config (set during `/project-setup`). A reference creator may be Argentine,
+  Spanish, or English; the derived profile must NOT import their lexicon, slang,
+  or `tú/vos/vosotros`. This applies to the Step 1c web research too: report the
+  creator's structural habits, never their region-specific words.
 - Reference transcripts live in `research/references/` and are **gitignored**
   (third-party content). Traceability lives in the `reference_videos` URLs of the
   config and the derived voice profile, which are committed.

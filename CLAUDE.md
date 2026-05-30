@@ -19,7 +19,11 @@ exists (`test -f`). If it does NOT exist:
 
 ## Idioma
 
-- **Contenido** (guiones, specs, narración, descripciones): idioma definido en config.
+- **Contenido** (guiones, specs, narración, descripciones): idioma **y variante
+  regional** definidos en config (`project.content_language` + `narration.dialect`).
+  Los guiones respetan el **registro regional** (`narration.dialect_register`,
+  espejado en `scripts/CONTEXT.md`): se escribe en el dialecto del proyecto y se
+  evita jerga de otras variantes.
 - **Código, identificadores, comandos, nombres de carpetas top-level**: inglés.
 - **Frontmatter y metadata**: inglés.
 

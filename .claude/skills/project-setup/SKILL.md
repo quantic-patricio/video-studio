@@ -54,6 +54,14 @@ Use `AskUserQuestion` to ask these questions (batch into 1-2 calls):
    - Other (free text)
    → `project.content_language` (ISO code: es, en, pt, etc.)
 
+3. "¿Qué variante regional?" — adapt options to the chosen language. For
+   Spanish: Chileno · Rioplatense (Argentina/Uruguay) · Mexicano · Neutro
+   latinoamericano · Español de España · Other. For other languages offer the
+   relevant varieties (pt-BR/pt-PT, en-US/en-UK/neutral) or default to neutral.
+   → `narration.dialect` (short label, e.g. `"español de Chile (es-CL)"`). This
+   pins the lexicon/idioms the scripts use and which other-region slang to avoid;
+   the full register is composed in Step 2.1.c.
+
 ## Phase 2 — Audience & Tone
 
 Use `AskUserQuestion`:
@@ -169,6 +177,39 @@ reference profile exists, pre-select its values:
    - Storytelling / anecdotes
    → `narration.devices` (array)
 
+#### Step 2.1.c — Compose the regional register
+
+Using the **dialect** from Phase 1 Q3 and the **person** just chosen, compose a
+`narration.dialect_register` block: the prose that tells the script writer which
+lexicon/idioms to use and which to avoid. Compose it for the user's dialect
+following the **structure** of the Chilean model below (do NOT copy Chile's
+contents for another dialect — write the equivalent for theirs):
+
+```markdown
+El autor del proyecto es **chileno**. Los guiones se escriben en un español de
+Chile **natural pero legible en toda LATAM** — ni "español neutro" plano y
+robótico, ni saturado de modismos que dejen afuera al resto de la audiencia
+hispana.
+
+- **Trato**: "tú" en singular, "ustedes" en plural. **Nada de voseo** (vos/tenés)
+  ni de "vosotros"/españolismos.
+- **Léxico**: variante latinoamericana — *computador* (no "ordenador"),
+  *celular* (no "móvil"), *acá/allá*, *plata* informal cuando calce. Evitar
+  *vale*, *coger*, *guay*, *flipar*.
+- **Color local con mesura**: un toque ocasional de oralidad chilena suma
+  cercanía, pero **no** abusar de *po/cachái/fome/bacán* — si aparecen, que sea
+  por intención, no por default. La claridad y el tono divulgativo mandan por
+  sobre el localismo.
+- El `humanizer` debe **preservar** este registro, no neutralizarlo.
+```
+
+Default register = *natural pero legible en toda la región, color local con
+mesura* (good for broad/educational audiences). Keep **Trato** consistent with
+`narration.person`. **Show the composed block to the user** and let them dial the
+local color up or down before saving. Store the confirmed block (body only — the
+template supplies the `## Registro regional — <dialect>` heading) as
+`narration.dialect_register`.
+
 ## Phase 3 — Visual Identity
 
 Use `AskUserQuestion`:
@@ -238,6 +279,10 @@ audience:
   tone: "<from Phase 2>"
 
 narration:
+  dialect: "<short label from Phase 1 Q3, e.g. 'español de Chile (es-CL)'>"
+  dialect_register: |
+    <regional-register block composed in Step 2.1.c — body only, no heading.
+    Multi-line: intro + Trato + Léxico (do/don't) + Color local + humanizer note.>
   person: "<tú | vos | usted | nosotros>"
   pacing: "<short | developed | mixed>"
   jargon: "<none | explained | free>"
@@ -329,36 +374,57 @@ the config and re-run `materialize.py` — no need to re-run the whole wizard.
 
 ### Step 5.1 — Set up Root.tsx
 
-Use the Remotion MCP (`mcp__remotion__remotion-documentation`) to look up the
-correct `<Composition>` API for the user's chosen fps and dimensions.
+`animations/remotion-app/src/Root.tsx` **already exists** in the clone — do not
+`Write` it (the harness blocks overwriting an unread file). **Read** it, then
+**replace** its contents with the shell below.
 
-Write `animations/remotion-app/src/Root.tsx`:
+Optionally confirm the `<Composition>` API via the Remotion MCP
+(`mcp__remotion__remotion-documentation`) for the comment — but the shell itself
+registers nothing yet, so it carries **no `remotion` import**. The project's
+`tsconfig` has `noUnusedLocals: true`: an unused `import { Composition }` would
+fail the build. Add the import only when the first composition is registered.
 
 ```tsx
-import { Composition } from "remotion";
-
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      {/* Episode compositions are registered here during the build phase. */}
-      {/* Shared component previews are added as _shared/ grows. */}
+      {/* Episode compositions are registered here during the build phase.
+          To add the first one, import { Composition } from "remotion" and render:
+          <Composition
+            id="my-episode"
+            component={MyEpisode}
+            durationInFrames={...}
+            fps={<config fps>}
+            width={<config width>}
+            height={<config height>}
+          /> */}
     </>
   );
 };
 ```
 
-This is intentionally empty. Compositions are added as episodes are built.
+This is intentionally empty (no imports). Compositions are added as episodes are
+built. `React.FC` resolves via the global `@types/react` namespace — no
+`import React` needed.
 
-### Step 5.2 — Verify build
+### Step 5.2 — Install deps & verify build
 
-Run:
+`tsc` needs Remotion's types, so dependencies must be installed first. Install
+them here (idempotent — skip if `node_modules` already exists; this can take a
+few minutes), then verify:
+
 ```bash
-cd animations/remotion-app && npx tsc --noEmit
+cd animations/remotion-app
+[ -d node_modules ] || npm install
+npx tsc --noEmit && echo "TSC_CLEAN" || echo "TSC_FAILED"
 ```
 
 If TypeScript errors → fix them. Common issues:
 - Broken imports from deleted shared components.
 - Missing type references.
+
+Installing here (not as a deferred next-step) makes the build check real and
+leaves the project immediately runnable.
 
 ## Phase 6 — Confirm
 
@@ -377,10 +443,10 @@ Studio configured:
 - Config: .claude/studio-config.yaml
 
 Next steps:
-1. cd animations/remotion-app && npm install
-2. npm run dev  (preview in Remotion Studio)
-3. Start creating episodes!
+1. cd animations/remotion-app && npm run dev  (preview in Remotion Studio)
+2. Start creating episodes!
 ```
+(Dependencies were already installed in Phase 5 — no `npm install` needed.)
 
 If `integrations.gemini.enabled` is true, add a reminder (the key was normally
 already set during Step 2.1.a — this just covers the case it was skipped):

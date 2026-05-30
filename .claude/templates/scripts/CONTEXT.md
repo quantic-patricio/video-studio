@@ -32,7 +32,18 @@ voiceover o para generar un spec de animación.
 
 **Signature moves**: {{narration.signature_moves}}
 
-Aplicá esta voz al redactar el `<slug>.ai.md`; el `humanizer` la respeta al
+## Registro regional — {{narration.dialect}}
+
+> Variante del idioma en la que se escriben los guiones. Modifica el **registro**
+> (léxico, modismos, trato), no el resto del perfil de voz. El dialecto es del
+> **proyecto**: aunque la voz se derive de un creador de otra región, los guiones
+> se escriben siempre en este dialecto.
+
+{{narration.dialect_register}}
+
+Aplicá esta voz **y este registro** al redactar el `<slug>.ai.md`. Al invocar el
+`humanizer`, pasale esta sección (voz narrativa + registro regional) como
+referencia de voz, para que **preserve el dialecto** y no lo neutralice al
 generar el `<slug>.md`.
 
 ## Sub-carpetas
@@ -89,7 +100,9 @@ Cada guión vive en **dos archivos** que conviven para poder comparar el
 **Flujo de cierre (obligatorio al terminar de escribir):**
 
 1. Escribir el borrador completo en `<slug>.ai.md`.
-2. Invocar la skill `humanizer` sobre `<slug>.ai.md`.
+2. Invocar la skill `humanizer` sobre `<slug>.ai.md`, pasándole la sección **Voz
+   narrativa + Registro regional** de este archivo como referencia de voz (para
+   que preserve el dialecto, no lo neutralice).
 3. Guardar el resultado en `<slug>.md` (sin sufijo). **Nunca** sobrescribir
    `<slug>.ai.md`: es la versión cruda de referencia.
 4. Mostrar al usuario el diff `<slug>.ai.md` ↔ `<slug>.md`. Si el humanizer
